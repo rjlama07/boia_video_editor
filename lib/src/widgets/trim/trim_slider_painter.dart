@@ -20,7 +20,7 @@ class TrimSliderPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint background = Paint()..color = style.background;
+    final Paint background = Paint()..color = const Color(0xffeef0f9);
 
     final rrect = RRect.fromRectAndRadius(
       rect,
@@ -32,12 +32,28 @@ class TrimSliderPainter extends CustomPainter {
     canvas.drawPath(
       Path.combine(
         PathOperation.difference,
-        Path()..addRect(Rect.fromLTWH(0, 0, size.width, size.height)),
         Path()
-          ..addRRect(rrect)
+          ..addRRect(RRect.fromRectAndRadius(
+            Rect.fromLTWH(10, 0, size.width - 20, size.height),
+            Radius.circular(style.borderRadius),
+          )),
+        Path()
+          ..addRect(rect)
           ..close(),
       ),
       background,
+    );
+
+    canvas.drawPath(
+      Path()
+        ..addRRect(RRect.fromRectAndRadius(
+          Rect.fromLTWH(10, 0, size.width - 20, size.height),
+          Radius.circular(style.borderRadius),
+        )),
+      Paint()
+        ..color = const Color(0xffd9deef)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2,
     );
 
     final trimColor = isTrimming
@@ -99,13 +115,15 @@ class TrimSliderPainter extends CustomPainter {
     canvas.drawPath(
       Path()
         ..addRect(Rect.fromPoints(
-          rect.topLeft,
-          rect.topRight - Offset(0.0, style.lineWidth),
+          rect.topLeft + const Offset(0, 1),
+          rect.topRight - Offset(-4.0, style.lineWidth) + const Offset(0, 1),
         ))
         ..addRect(
           Rect.fromPoints(
-            rect.bottomRight + Offset(0.0, style.lineWidth),
-            rect.bottomLeft,
+            rect.bottomRight +
+                Offset(4.0, style.lineWidth) -
+                const Offset(0, 1),
+            rect.bottomLeft - const Offset(0, 1),
           ),
         ),
       Paint()..color = const Color(0xff989eb3),
@@ -114,64 +132,17 @@ class TrimSliderPainter extends CustomPainter {
     if (image != null) {
       canvas.drawImage(
         image!,
-        rect.topLeft - const Offset(2.0, 0.0),
+        rect.topLeft + const Offset(-8.0, -3.0),
         Paint(),
       );
       canvas.drawImage(
         image!,
-        rect.topRight + const Offset(2.0, 0.0),
+        rect.topRight + const Offset(0.0, -3.0),
         Paint(),
       );
     }
 
     paintIndicator(canvas, size);
-  }
-
-  Path getEdgesBarPath(
-    Size size, {
-    required Offset centerLeft,
-    required Offset centerRight,
-    required double halfLineWidth,
-  }) {
-    final borderRadius = Radius.circular(style.borderRadius);
-
-    /// Return left and right edges, with a reversed border radius on the inside of the rect
-    return Path();
-    // LEFT EDGE
-
-    // RIGHT EDGE
-    // ..addPath(
-    //   Path.combine(
-    //     PathOperation.difference,
-    //     Path()
-    //       ..addRRect(
-    //         RRect.fromRectAndCorners(
-    //           Rect.fromLTWH(
-    //             centerRight.dx - halfLineWidth - style.borderRadius,
-    //             -style.lineWidth,
-    //             style.edgeWidth + style.borderRadius,
-    //             size.height + style.lineWidth * 2,
-    //           ),
-    //           topRight: borderRadius,
-    //           bottomRight: borderRadius,
-    //         ),
-    //       ),
-    //     Path()
-    //       ..addRRect(
-    //         RRect.fromRectAndCorners(
-    //           Rect.fromLTWH(
-    //             centerRight.dx - halfLineWidth - style.borderRadius,
-    //             0.0,
-    //             style.borderRadius,
-    //             size.height,
-    //           ),
-    //           topRight: borderRadius,
-    //           bottomRight: borderRadius,
-    //         ),
-    //       ),
-    //   ),
-    //   Offset.zero,
-    // );
   }
 
   void paintCircle(
@@ -208,16 +179,16 @@ class TrimSliderPainter extends CustomPainter {
   void paintIndicator(Canvas canvas, Size size) {
     final progress = Paint()
       ..color = const Color(0xff366cf8)
-      ..strokeWidth = 0.1;
+      ..strokeWidth = 1;
 
     // DRAW VIDEO INDICATOR
     canvas.drawRRect(
       RRect.fromRectAndRadius(
         Rect.fromPoints(
-          Offset(position - style.positionLineWidth / 2, -style.lineWidth * 2),
+          Offset(position - style.positionLineWidth / 2, -style.lineWidth * 4),
           Offset(
-            position + style.positionLineWidth / 2,
-            size.height + style.lineWidth * 2,
+            position + style.positionLineWidth / 6,
+            size.height + style.lineWidth * 4,
           ),
         ),
         Radius.circular(style.positionLineWidth),
