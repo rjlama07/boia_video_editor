@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:video_editor/src/controller.dart';
 import 'package:video_editor/src/widgets/trim/thumbnail_slider.dart';
 import 'package:video_editor/src/widgets/trim/trim_slider_painter.dart';
+import 'dart:ui' as ui;
 
 enum _TrimBoundaries { left, right, inside, progress }
 
@@ -114,9 +116,12 @@ class _TrimSliderState extends State<TrimSlider>
   /// Save last [_scrollController] pixels position
   double _lastScrollPixels = 0;
 
+  late ui.Image _image;
+
   @override
   void initState() {
     super.initState();
+    _loadImage();
     _scrollController = widget.scrollController ?? ScrollController();
     widget.controller.addListener(_updateTrim);
     if (_isExtendTrim) _scrollController.addListener(attachTrimToScroll);
@@ -128,6 +133,18 @@ class _TrimSliderState extends State<TrimSlider>
     if (_isExtendTrim) _scrollController.removeListener(attachTrimToScroll);
     _scrollController.dispose();
     super.dispose();
+  }
+
+  _loadImage() async {
+    ByteData bd = await rootBundle.load("packages/video_editor/assets/bar.png");
+
+    final Uint8List bytes = Uint8List.view(bd.buffer);
+
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+
+    final ui.Image image = (await codec.getNextFrame()).image;
+
+    setState(() => _image = image);
   }
 
   /// Returns the [Rect] side position (left or rect) in a range between 0 and 1
@@ -631,6 +648,7 @@ class _TrimSliderState extends State<TrimSlider>
                         widget.controller.trimStyle,
                         isTrimming: widget.controller.isTrimming,
                         isTrimmed: widget.controller.isTrimmed,
+                        image: _image,
                       ),
                     ),
                   );

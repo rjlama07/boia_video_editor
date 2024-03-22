@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:video_editor/src/models/trim_style.dart';
+import 'dart:ui' as ui;
 
 class TrimSliderPainter extends CustomPainter {
   const TrimSliderPainter(
@@ -8,12 +9,14 @@ class TrimSliderPainter extends CustomPainter {
     this.style, {
     this.isTrimming = false,
     this.isTrimmed = false,
+    this.image,
   });
 
   final Rect rect;
   final bool isTrimming, isTrimmed;
   final double position;
   final TrimSliderStyle style;
+  final ui.Image? image;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -42,10 +45,12 @@ class TrimSliderPainter extends CustomPainter {
         : isTrimmed
             ? style.onTrimmedColor
             : style.lineColor;
+
     final line = Paint()
       ..color = trimColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = style.lineWidth;
+
     final edges = Paint()..color = trimColor;
 
     final double halfLineWidth = style.edgeWidth / 2;
@@ -92,34 +97,39 @@ class TrimSliderPainter extends CustomPainter {
     required double halfLineWidth,
   }) {
     canvas.drawPath(
-      Path.combine(
-        PathOperation.union,
-        // DRAW TOP AND BOTTOM LINES
-        Path()
-          ..addRect(Rect.fromPoints(
-            rect.topLeft,
-            rect.topRight - Offset(0.0, style.lineWidth),
-          ))
-          ..addRect(
-            Rect.fromPoints(
-              rect.bottomRight + Offset(0.0, style.lineWidth),
-              rect.bottomLeft,
-            ),
+      Path()
+        ..addRect(Rect.fromPoints(
+          rect.topLeft,
+          rect.topRight - Offset(0.0, style.lineWidth),
+        ))
+        ..addRect(
+          Rect.fromPoints(
+            rect.bottomRight + Offset(0.0, style.lineWidth),
+            rect.bottomLeft,
           ),
-        // DRAW EDGES
-        getEdgesBarPath(
-          size,
-          centerLeft: centerLeft,
-          centerRight: centerRight,
-          halfLineWidth: halfLineWidth,
         ),
-      ),
-      edges,
+      Paint()..color = const Color(0xff989eb3),
     );
 
-    paintIcons(canvas, centerLeft: centerLeft, centerRight: centerRight);
-
     paintIndicator(canvas, size);
+
+    if (image != null) {
+      canvas.drawImage(
+        image!,
+        rect.topLeft - const Offset(8.0, 4.0),
+        Paint(),
+      );
+      canvas.drawImage(
+        image!,
+        rect.topLeft - const Offset(8.0, 4.0),
+        Paint(),
+      );
+      canvas.drawImage(
+        image!,
+        rect.topRight - const Offset(8.0, 4.0),
+        Paint(),
+      );
+    }
   }
 
   Path getEdgesBarPath(
@@ -128,96 +138,45 @@ class TrimSliderPainter extends CustomPainter {
     required Offset centerRight,
     required double halfLineWidth,
   }) {
-    if (style.borderRadius == 0) {
-      return Path()
-        // LEFT EDGE
-        ..addRect(
-          Rect.fromCenter(
-            center: centerLeft,
-            width: style.edgesSize,
-            height: size.height + style.lineWidth * 2,
-          ),
-        )
-        // RIGTH EDGE
-        ..addRect(
-          Rect.fromCenter(
-            center: centerRight,
-            width: style.edgesSize,
-            height: size.height + style.lineWidth * 2,
-          ),
-        );
-    }
-
     final borderRadius = Radius.circular(style.borderRadius);
 
     /// Return left and right edges, with a reversed border radius on the inside of the rect
-    return Path()
-      // LEFT EDGE
-      ..addPath(
-        Path.combine(
-          PathOperation.difference,
-          Path()
-            ..addRRect(
-              RRect.fromRectAndCorners(
-                Rect.fromLTWH(
-                  centerLeft.dx - halfLineWidth,
-                  -style.lineWidth,
-                  style.edgeWidth + style.borderRadius,
-                  size.height + style.lineWidth * 2,
-                ),
-                topLeft: borderRadius,
-                bottomLeft: borderRadius,
-              ),
-            ),
-          Path()
-            ..addRRect(
-              RRect.fromRectAndCorners(
-                Rect.fromLTWH(
-                  centerLeft.dx + halfLineWidth,
-                  0.0,
-                  style.borderRadius,
-                  size.height,
-                ),
-                topLeft: borderRadius,
-                bottomLeft: borderRadius,
-              ),
-            ),
-        ),
-        Offset.zero,
-      )
-      // RIGHT EDGE
-      ..addPath(
-        Path.combine(
-          PathOperation.difference,
-          Path()
-            ..addRRect(
-              RRect.fromRectAndCorners(
-                Rect.fromLTWH(
-                  centerRight.dx - halfLineWidth - style.borderRadius,
-                  -style.lineWidth,
-                  style.edgeWidth + style.borderRadius,
-                  size.height + style.lineWidth * 2,
-                ),
-                topRight: borderRadius,
-                bottomRight: borderRadius,
-              ),
-            ),
-          Path()
-            ..addRRect(
-              RRect.fromRectAndCorners(
-                Rect.fromLTWH(
-                  centerRight.dx - halfLineWidth - style.borderRadius,
-                  0.0,
-                  style.borderRadius,
-                  size.height,
-                ),
-                topRight: borderRadius,
-                bottomRight: borderRadius,
-              ),
-            ),
-        ),
-        Offset.zero,
-      );
+    return Path();
+    // LEFT EDGE
+
+    // RIGHT EDGE
+    // ..addPath(
+    //   Path.combine(
+    //     PathOperation.difference,
+    //     Path()
+    //       ..addRRect(
+    //         RRect.fromRectAndCorners(
+    //           Rect.fromLTWH(
+    //             centerRight.dx - halfLineWidth - style.borderRadius,
+    //             -style.lineWidth,
+    //             style.edgeWidth + style.borderRadius,
+    //             size.height + style.lineWidth * 2,
+    //           ),
+    //           topRight: borderRadius,
+    //           bottomRight: borderRadius,
+    //         ),
+    //       ),
+    //     Path()
+    //       ..addRRect(
+    //         RRect.fromRectAndCorners(
+    //           Rect.fromLTWH(
+    //             centerRight.dx - halfLineWidth - style.borderRadius,
+    //             0.0,
+    //             style.borderRadius,
+    //             size.height,
+    //           ),
+    //           topRight: borderRadius,
+    //           bottomRight: borderRadius,
+    //         ),
+    //       ),
+    //   ),
+    //   Offset.zero,
+    // );
   }
 
   void paintCircle(
@@ -253,8 +212,8 @@ class TrimSliderPainter extends CustomPainter {
 
   void paintIndicator(Canvas canvas, Size size) {
     final progress = Paint()
-      ..color = style.positionLineColor
-      ..strokeWidth = style.positionLineWidth;
+      ..color = const Color(0xff366cf8)
+      ..strokeWidth = 0.1;
 
     // DRAW VIDEO INDICATOR
     canvas.drawRRect(
