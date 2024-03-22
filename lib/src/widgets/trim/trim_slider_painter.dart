@@ -111,20 +111,20 @@ class TrimSliderPainter extends CustomPainter {
       Paint()..color = const Color(0xff989eb3),
     );
 
-    paintIndicator(canvas, size);
-
     if (image != null) {
       canvas.drawImage(
         image!,
-        rect.topLeft - const Offset(0.0, 0.0),
+        rect.topLeft + const Offset(4.0, 0.0),
         Paint(),
       );
       canvas.drawImage(
         image!,
-        rect.topRight - const Offset(0.0, 0.0),
+        rect.topRight + const Offset(4.0, 0.0),
         Paint(),
       );
     }
+
+    paintIndicator(canvas, size);
   }
 
   Path getEdgesBarPath(
