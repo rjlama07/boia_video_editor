@@ -121,12 +121,12 @@ class TrimSliderPainter extends CustomPainter {
       );
       canvas.drawImage(
         image!,
-        rect.topLeft - const Offset(8.0, 4.0),
+        rect.topLeft - const Offset(2.0, 0.0),
         Paint(),
       );
       canvas.drawImage(
         image!,
-        rect.topRight - const Offset(8.0, 4.0),
+        rect.topRight - const Offset(2.0, 0.0),
         Paint(),
       );
     }
