@@ -10,7 +10,6 @@ class TrimSliderPainter extends CustomPainter {
     this.isTrimming = false,
     this.isTrimmed = false,
     this.image,
-    this.showProgressIndicator = false,
   });
 
   final Rect rect;
@@ -18,7 +17,6 @@ class TrimSliderPainter extends CustomPainter {
   final double position;
   final TrimSliderStyle style;
   final ui.Image? image;
-  final bool showProgressIndicator;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -143,9 +141,8 @@ class TrimSliderPainter extends CustomPainter {
         Paint(),
       );
     }
-    if (showProgressIndicator) {
-      paintIndicator(canvas, size);
-    }
+
+    paintIndicator(canvas, size);
   }
 
   void paintCircle(

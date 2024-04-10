@@ -24,7 +24,6 @@ class TrimSlider extends StatefulWidget {
     this.hasHaptic = true,
     this.maxViewportRatio = 2.5,
     this.scrollController,
-    this.showProgressIndicator = false,
   });
 
   /// The [controller] param is mandatory so every change in the controller settings will propagate in the trim slider view
@@ -60,8 +59,6 @@ class TrimSlider extends StatefulWidget {
 
   //// The [scrollController] param specifies the scroll controller to use for the trim slider view
   final ScrollController? scrollController;
-
-    final bool showProgressIndicator;
 
   @override
   State<TrimSlider> createState() => _TrimSliderState();
