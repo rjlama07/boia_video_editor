@@ -34,7 +34,7 @@ class TrimSliderPainter extends CustomPainter {
         PathOperation.difference,
         Path()
           ..addRRect(RRect.fromRectAndRadius(
-            Rect.fromLTWH(10, 0, size.width - 20, size.height),
+            Rect.fromLTWH(0, 0, size.width, size.height),
             Radius.circular(style.borderRadius),
           )),
         Path()
@@ -47,7 +47,7 @@ class TrimSliderPainter extends CustomPainter {
     canvas.drawPath(
       Path()
         ..addRRect(RRect.fromRectAndRadius(
-          Rect.fromLTWH(10, 0, size.width - 20, size.height),
+          Rect.fromLTWH(0, 0, size.width, size.height),
           Radius.circular(style.borderRadius),
         )),
       Paint()
