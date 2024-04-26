@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:video_editor/src/controller.dart';
 import 'package:video_editor/src/widgets/trim/thumbnail_slider.dart';
 import 'package:video_editor/src/widgets/trim/trim_slider_painter.dart';
@@ -115,8 +116,6 @@ class _TrimSliderState extends State<TrimSlider>
   /// Save last [_scrollController] pixels position
   double _lastScrollPixels = 0;
 
-  late ui.Image _image;
-
   @override
   void initState() {
     super.initState();
@@ -134,7 +133,7 @@ class _TrimSliderState extends State<TrimSlider>
     super.dispose();
   }
 
-  _loadImage() async {
+  Future<ui.Image> _loadImage() async {
     ByteData bd = await rootBundle.load("packages/video_editor/assets/bar.png");
 
     final Uint8List bytes = Uint8List.view(bd.buffer);
@@ -143,7 +142,7 @@ class _TrimSliderState extends State<TrimSlider>
 
     final ui.Image image = (await codec.getNextFrame()).image;
 
-    setState(() => _image = image);
+    return image;
   }
 
   /// Returns the [Rect] side position (left or rect) in a range between 0 and 1
@@ -571,6 +570,7 @@ class _TrimSliderState extends State<TrimSlider>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     return LayoutBuilder(builder: (_, contrainst) {
       final Size trimLayout = Size(
         contrainst.maxWidth - _horizontalMargin * 2,
@@ -627,33 +627,43 @@ class _TrimSliderState extends State<TrimSlider>
                 ),
               ),
             ),
-            GestureDetector(
-              onHorizontalDragStart: _onHorizontalDragStart,
-              onHorizontalDragUpdate: _onHorizontalDragUpdate,
-              onHorizontalDragEnd: _onHorizontalDragEnd,
-              behavior: HitTestBehavior.opaque,
-              child: AnimatedBuilder(
-                animation: Listenable.merge([
-                  widget.controller,
-                  widget.controller.video,
-                ]),
-                builder: (_, __) {
-                  return RepaintBoundary(
-                    child: CustomPaint(
-                      size: Size.fromHeight(widget.height),
-                      painter: TrimSliderPainter(
-                        _rect,
-                        _getVideoPosition(),
-                        widget.controller.trimStyle,
-                        isTrimming: widget.controller.isTrimming,
-                        isTrimmed: widget.controller.isTrimmed,
-                        image: _image,
+            FutureBuilder(
+                future: _loadImage(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final image = snapshot.data as ui.Image;
+
+                    return GestureDetector(
+                      onHorizontalDragStart: _onHorizontalDragStart,
+                      onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                      onHorizontalDragEnd: _onHorizontalDragEnd,
+                      behavior: HitTestBehavior.opaque,
+                      child: AnimatedBuilder(
+                        animation: Listenable.merge([
+                          widget.controller,
+                          widget.controller.video,
+                        ]),
+                        builder: (_, __) {
+                          return RepaintBoundary(
+                            child: CustomPaint(
+                              size: Size.fromHeight(widget.height),
+                              painter: TrimSliderPainter(
+                                _rect,
+                                _getVideoPosition(),
+                                widget.controller.trimStyle,
+                                isTrimming: widget.controller.isTrimming,
+                                isTrimmed: widget.controller.isTrimmed,
+                                image: image,
+                              ),
+                            ),
+                          );
+                        },
                       ),
-                    ),
-                  );
-                },
-              ),
-            )
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                })
           ]));
     });
   }
