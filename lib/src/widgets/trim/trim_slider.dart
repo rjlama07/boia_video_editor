@@ -647,11 +647,21 @@ class _TrimSliderState extends State<TrimSlider>
                           widget.controller.video,
                         ]),
                         builder: (_, __) {
+
+
+                          // Adjust the rect to account for the horizontal padding
+                          final paddedRect = Rect.fromLTRB(
+                            _rect.left + 48, // Add left padding
+                            _rect.top,
+                            _rect.right - 48, // Add right padding
+                            _rect.bottom,
+                          );
+
                           return RepaintBoundary(
                             child: CustomPaint(
                               size: Size.fromHeight(widget.height),
                               painter: TrimSliderPainter(
-                                _rect,
+                                paddedRect,
                                 _getVideoPosition(),
                                 widget.controller.trimStyle,
                                 isTrimming: widget.controller.isTrimming,

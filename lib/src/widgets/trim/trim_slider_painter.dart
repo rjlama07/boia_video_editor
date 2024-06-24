@@ -51,7 +51,7 @@ class TrimSliderPainter extends CustomPainter {
           Radius.circular(style.borderRadius),
         )),
       Paint()
-        ..color = const Color(0xffd9deef)
+        ..color = Colors.transparent
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2,
     );
