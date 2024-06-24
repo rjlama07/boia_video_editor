@@ -19,6 +19,7 @@ class TrimSlider extends StatefulWidget {
     super.key,
     required this.controller,
     required this.scrollPhysics,
+    this.framePadding = 0,
     this.height = 60,
     this.horizontalMargin = 0.0,
     this.child,
@@ -28,6 +29,9 @@ class TrimSlider extends StatefulWidget {
   });
 
   final ScrollPhysics scrollPhysics;
+
+  /// The padding between initial trim bars
+  final double framePadding;
 
   /// The [controller] param is mandatory so every change in the controller settings will propagate in the trim slider view
   final VideoEditorController controller;
@@ -98,10 +102,11 @@ class _TrimSliderState extends State<TrimSlider>
 
   // Edges touch margin come from it size, but minimum is [margin]
   late final _edgesTouchMargin =
-      max(widget.controller.trimStyle.edgeWidth, _touchMargin);
+  max(widget.controller.trimStyle.edgeWidth, _touchMargin);
+
   // Position line touch margin come from it size, but minimum is [margin]
   late final _positionTouchMargin =
-      max(widget.controller.trimStyle.positionLineWidth, _touchMargin);
+  max(widget.controller.trimStyle.positionLineWidth, _touchMargin);
 
   // Scroll view
 
@@ -151,7 +156,7 @@ class _TrimSliderState extends State<TrimSlider>
   /// Returns the [Rect] side position (left or rect) in a range between 0 and 1
   double _getRectToTrim(double rectVal) =>
       (rectVal + _scrollController.offset - _horizontalMargin) /
-      _fullLayout.width;
+          _fullLayout.width;
 
   /// Convert the controller trim value into the trim slider view size
   double _geTrimToRect(double trimVal) =>
@@ -222,7 +227,7 @@ class _TrimSliderState extends State<TrimSlider>
           _scrollController.position.maxScrollExtent) {
         _changeTrimRect(
           left:
-              _rect.left + (_lastScrollPixels.abs() - _scrollController.offset),
+          _rect.left + (_lastScrollPixels.abs() - _scrollController.offset),
           updateTrim: false,
         );
       }
@@ -252,7 +257,7 @@ class _TrimSliderState extends State<TrimSlider>
       } else if (_scrollController.position.extentAfter == 0.0 &&
           _preSynchRight == null) {
         final scrollOffset = (_scrollController.position.maxScrollExtent -
-                (_lastScrollPixelsBeforeBounce ?? _scrollController.offset))
+            (_lastScrollPixelsBeforeBounce ?? _scrollController.offset))
             .abs();
         _preSynchRight = max(
           0,
@@ -362,10 +367,10 @@ class _TrimSliderState extends State<TrimSlider>
             width: _rect.width - (clampLeft - posLeft.dx).abs() - delta.dx);
         break;
       case _TrimBoundaries.right:
-        // avoid rect to be out of bounds & maxTrim to be smaller than minTrim
+      // avoid rect to be out of bounds & maxTrim to be smaller than minTrim
         _changeTrimRect(
           width: (_rect.left + _rect.width + delta.dx)
-                  .clamp(_rect.left, _trimLayout.width + _horizontalMargin) -
+              .clamp(_rect.left, _trimLayout.width + _horizontalMargin) -
               _rect.left,
         );
         break;
@@ -448,7 +453,8 @@ class _TrimSliderState extends State<TrimSlider>
       _updateControllerTrim();
     } else {
       setState(
-          () => _rect = Rect.fromLTWH(left!, _rect.top, width!, _rect.height));
+              () =>
+          _rect = Rect.fromLTWH(left!, _rect.top, width!, _rect.height));
     }
     // if left edge or right edge is touched, vibrate
     if (shouldHaptic) HapticFeedback.lightImpact();
@@ -524,9 +530,9 @@ class _TrimSliderState extends State<TrimSlider>
   /// NOTE : Using function instead of getter seems faster when grabbing the cursor
   double _getVideoPosition() =>
       _preComputedVideoPosition ??
-      (_fullLayout.width * widget.controller.trimPosition -
-          _scrollController.offset +
-          _horizontalMargin);
+          (_fullLayout.width * widget.controller.trimPosition -
+              _scrollController.offset +
+              _horizontalMargin);
 
   Duration _getDurationDiff(double left, double width) {
     final double min = (left - _horizontalMargin) / _fullLayout.width;
@@ -542,8 +548,8 @@ class _TrimSliderState extends State<TrimSlider>
     final checkLastSize =
         _boundary != null && _boundary != _TrimBoundaries.inside;
     final isNotMin = _rect.left !=
-            (_horizontalMargin +
-                (checkLastSize ? 0 : _lastScrollPixels.abs())) &&
+        (_horizontalMargin +
+            (checkLastSize ? 0 : _lastScrollPixels.abs())) &&
         widget.controller.minTrim > 0.0 &&
         (checkLastSize ? left < _rect.left : true);
     final isNotMax = _rect.right != _trimLayout.width + _horizontalMargin &&
@@ -552,11 +558,11 @@ class _TrimSliderState extends State<TrimSlider>
     final isOnLeftEdge =
         (_scrollController.offset.abs() + _horizontalMargin - left).abs() < 1.0;
     final isOnRightEdge = (_bounceRightOffset +
-                left +
-                width -
-                _trimLayout.width -
-                _horizontalMargin)
-            .abs() <
+        left +
+        width -
+        _trimLayout.width -
+        _horizontalMargin)
+        .abs() <
         1.0;
 
     return (isNotMin && isOnLeftEdge) || (isNotMax && isOnRightEdge);
@@ -566,8 +572,8 @@ class _TrimSliderState extends State<TrimSlider>
   double _getRectWidthFromDuration(Duration duration) =>
       duration > Duration.zero
           ? _fullLayout.width /
-              (widget.controller.videoDuration.inMilliseconds /
-                  duration.inMilliseconds)
+          (widget.controller.videoDuration.inMilliseconds /
+              duration.inMilliseconds)
           : 0.0;
 
   @override
@@ -603,6 +609,7 @@ class _TrimSliderState extends State<TrimSlider>
                 return true;
               },
               child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(horizontal: widget.framePadding),
                 controller: _scrollController,
                 physics: widget.scrollPhysics,
                 scrollDirection: Axis.horizontal,
@@ -647,13 +654,11 @@ class _TrimSliderState extends State<TrimSlider>
                           widget.controller.video,
                         ]),
                         builder: (_, __) {
-
-
                           // Adjust the rect to account for the horizontal padding
                           final paddedRect = Rect.fromLTRB(
-                            _rect.left + 48, // Add left padding
+                            _rect.left + widget.framePadding, // Add left padding
                             _rect.top,
-                            _rect.right - 48, // Add right padding
+                            _rect.right - widget.framePadding, // Add right padding
                             _rect.bottom,
                           );
 
