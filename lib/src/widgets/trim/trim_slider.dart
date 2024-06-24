@@ -18,6 +18,7 @@ class TrimSlider extends StatefulWidget {
   const TrimSlider({
     super.key,
     required this.controller,
+    required this.scrollPhysics,
     this.height = 60,
     this.horizontalMargin = 0.0,
     this.child,
@@ -25,6 +26,8 @@ class TrimSlider extends StatefulWidget {
     this.maxViewportRatio = 2.5,
     this.scrollController,
   });
+
+  final ScrollPhysics scrollPhysics;
 
   /// The [controller] param is mandatory so every change in the controller settings will propagate in the trim slider view
   final VideoEditorController controller;
@@ -601,7 +604,7 @@ class _TrimSliderState extends State<TrimSlider>
               },
               child: SingleChildScrollView(
                 controller: _scrollController,
-                physics: const BouncingScrollPhysics(),
+                physics: widget.scrollPhysics,
                 scrollDirection: Axis.horizontal,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: _horizontalMargin),
