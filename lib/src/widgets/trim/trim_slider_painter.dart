@@ -20,7 +20,7 @@ class TrimSliderPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint background = Paint()..color = const Color(0xffeef0f9);
+    final Paint background = Paint()..color = Colors.white.withOpacity(0.5);
 
     final rrect = RRect.fromRectAndRadius(
       rect,
