@@ -19,7 +19,6 @@ class TrimSlider extends StatefulWidget {
     super.key,
     required this.controller,
     required this.scrollPhysics,
-    this.framePadding = 0,
     this.height = 60,
     this.horizontalMargin = 0.0,
     this.child,
@@ -29,9 +28,6 @@ class TrimSlider extends StatefulWidget {
   });
 
   final ScrollPhysics scrollPhysics;
-
-  /// The padding between initial trim bars
-  final double framePadding;
 
   /// The [controller] param is mandatory so every change in the controller settings will propagate in the trim slider view
   final VideoEditorController controller;
@@ -617,7 +613,6 @@ class _TrimSliderState extends State<TrimSlider>
                 return true;
               },
               child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: widget.framePadding),
                 controller: _scrollController,
                 physics: widget.scrollPhysics,
                 scrollDirection: Axis.horizontal,
@@ -650,7 +645,6 @@ class _TrimSliderState extends State<TrimSlider>
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     final image = snapshot.data as ui.Image;
-
                     return GestureDetector(
                       onHorizontalDragStart: _onHorizontalDragStart,
                       onHorizontalDragUpdate: _onHorizontalDragUpdate,
@@ -662,21 +656,11 @@ class _TrimSliderState extends State<TrimSlider>
                           widget.controller.video,
                         ]),
                         builder: (_, __) {
-                          // Adjust the rect to account for the horizontal padding
-                          final paddedRect = Rect.fromLTRB(
-                            _rect.left + widget.framePadding,
-                            // Add left padding
-                            _rect.top,
-                            _rect.right - widget.framePadding,
-                            // Add right padding
-                            _rect.bottom,
-                          );
-
                           return RepaintBoundary(
                             child: CustomPaint(
                               size: Size.fromHeight(widget.height),
                               painter: TrimSliderPainter(
-                                paddedRect,
+                                _rect,
                                 _getVideoPosition(),
                                 widget.controller.trimStyle,
                                 isTrimming: widget.controller.isTrimming,
