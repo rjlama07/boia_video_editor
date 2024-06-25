@@ -87,8 +87,17 @@ class _VideoEditorState extends State<VideoEditor> {
 
   late final VideoEditorController _controller = VideoEditorController.file(
     widget.file,
-    minDuration: const Duration(seconds: 1),
+    minDuration: const Duration(seconds: 9),
     maxDuration: const Duration(seconds: 10),
+    trimStyle: const TrimSliderStyle(
+      edgesType: TrimSliderEdgesType.circle,
+      iconSize: 0,
+      borderRadius: 8,
+      edgesSize: 0,
+      lineColor: Colors.yellow,
+      onTrimmingColor: Colors.white,
+      onTrimmedColor: Colors.white,
+    ),
   );
 
   @override
@@ -414,15 +423,18 @@ class _VideoEditorState extends State<VideoEditor> {
         width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.symmetric(vertical: height / 4),
         child: TrimSlider(
+          horizontalMargin: 48,
+          scrollPhysics: const ClampingScrollPhysics(),
           controller: _controller,
           height: height,
-          horizontalMargin: height / 4,
+          maxViewportRatio: _controller.videoDuration.inSeconds /
+              _controller.maxDuration.inSeconds,
           child: TrimTimeline(
             controller: _controller,
             padding: const EdgeInsets.only(top: 10),
           ),
         ),
-      )
+      ),
     ];
   }
 

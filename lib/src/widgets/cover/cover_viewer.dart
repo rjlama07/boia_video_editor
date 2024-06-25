@@ -51,7 +51,7 @@ class _CoverViewerState extends State<CoverViewer> with CropPreviewMixin {
   }
 
   void _checkIfCoverIsNull() {
-    if (widget.controller.selectedCoverVal!.thumbData == null) {
+    if (widget.controller.selectedCoverVal!.imagePath == null) {
       widget.controller.generateDefaultCoverThumbnail();
     }
   }
@@ -64,13 +64,13 @@ class _CoverViewerState extends State<CoverViewer> with CropPreviewMixin {
     return ValueListenableBuilder(
       valueListenable: widget.controller.selectedCoverNotifier,
       builder: (_, CoverData? selectedCover, __) {
-        if (selectedCover?.thumbData == null) {
+        if (selectedCover?.imagePath == null) {
           return Center(child: Text(widget.noCoverText));
         }
 
         return buildImageView(
           widget.controller,
-          selectedCover!.thumbData!,
+          selectedCover!.imagePath!,
           transform,
         );
       },
