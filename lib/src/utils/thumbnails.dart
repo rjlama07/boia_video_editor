@@ -15,11 +15,20 @@ Stream<List<String>> generateTrimThumbnails(
 
   for (int i = 1; i <= quantity; i++) {
     try {
+      double referenceWidth =
+          100; // This can be any value depending on your requirements
+      double aspectRatio = controller.videoDimension.aspectRatio;
+
+      int maxWidth = referenceWidth.toInt();
+      int maxHeight = maxWidth ~/ aspectRatio;
+
       final filePath = await VideoThumbnail.thumbnailFile(
         imageFormat: ImageFormat.JPEG,
         video: path,
         timeMs: (eachPart * i).toInt(),
         quality: controller.trimThumbnailsQuality,
+        maxWidth: maxWidth,
+        maxHeight: maxHeight,
       );
       if (filePath != null) {
         pathList.add(filePath);
