@@ -87,7 +87,7 @@ class _VideoEditorState extends State<VideoEditor> {
 
   late final VideoEditorController _controller = VideoEditorController.file(
     widget.file,
-    minDuration: const Duration(seconds: 9),
+    minDuration: const Duration(seconds: 10),
     maxDuration: const Duration(seconds: 10),
     trimStyle: const TrimSliderStyle(
       edgesType: TrimSliderEdgesType.circle,
