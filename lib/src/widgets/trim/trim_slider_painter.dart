@@ -3,13 +3,14 @@ import 'package:video_editor/src/models/trim_style.dart';
 import 'dart:ui' as ui;
 
 class TrimSliderPainter extends CustomPainter {
-  const TrimSliderPainter(this.rect,
-      this.position,
-      this.style, {
-        this.isTrimming = false,
-        this.isTrimmed = false,
-        this.image,
-      });
+  const TrimSliderPainter(
+    this.rect,
+    this.position,
+    this.style, {
+    this.isTrimming = false,
+    this.isTrimmed = false,
+    this.image,
+  });
 
   final Rect rect;
   final bool isTrimming, isTrimmed;
@@ -19,8 +20,7 @@ class TrimSliderPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final Paint background = Paint()
-      ..color = Colors.white.withOpacity(0.5);
+    final Paint background = Paint()..color = style.background;
 
     final rrect = RRect.fromRectAndRadius(
       rect,
@@ -59,16 +59,15 @@ class TrimSliderPainter extends CustomPainter {
     final trimColor = isTrimming
         ? style.onTrimmingColor
         : isTrimmed
-        ? style.onTrimmedColor
-        : style.lineColor;
+            ? style.onTrimmedColor
+            : style.lineColor;
 
     final line = Paint()
       ..color = trimColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = style.lineWidth;
 
-    final edges = Paint()
-      ..color = trimColor;
+    final edges = Paint()..color = trimColor;
 
     final double halfLineWidth = style.edgeWidth / 2;
     final double halfHeight = rect.height / 2;
@@ -103,30 +102,31 @@ class TrimSliderPainter extends CustomPainter {
     }
   }
 
-  void paintBar(Canvas canvas,
-      Size size, {
-        required RRect rrect,
-        required Paint line,
-        required Paint edges,
-        required Offset centerLeft,
-        required Offset centerRight,
-        required double halfLineWidth,
-      }) {
+  void paintBar(
+    Canvas canvas,
+    Size size, {
+    required RRect rrect,
+    required Paint line,
+    required Paint edges,
+    required Offset centerLeft,
+    required Offset centerRight,
+    required double halfLineWidth,
+  }) {
     canvas.drawPath(
       Path()
         ..addRect(Rect.fromPoints(
           rect.topLeft + const Offset(0, 1),
           rect.topRight - Offset(-4.0, style.lineWidth) + const Offset(0, 1),
-        ))..addRect(
-        Rect.fromPoints(
-          rect.bottomRight +
-              Offset(4.0, style.lineWidth) -
-              const Offset(0, 1),
-          rect.bottomLeft - const Offset(0, 1),
+        ))
+        ..addRect(
+          Rect.fromPoints(
+            rect.bottomRight +
+                Offset(4.0, style.lineWidth) -
+                const Offset(0, 1),
+            rect.bottomLeft - const Offset(0, 1),
+          ),
         ),
-      ),
-      Paint()
-        ..color = const Color(0xff989eb3),
+      Paint()..color = Colors.transparent,
     );
 
     if (image != null) {
@@ -145,21 +145,24 @@ class TrimSliderPainter extends CustomPainter {
     paintIndicator(canvas, size);
   }
 
-  void paintCircle(Canvas canvas,
-      Size size, {
-        required RRect rrect,
-        required Paint line,
-        required Paint edges,
-        required Offset centerLeft,
-        required Offset centerRight,
-      }) {
+  void paintCircle(
+    Canvas canvas,
+    Size size, {
+    required RRect rrect,
+    required Paint line,
+    required Paint edges,
+    required Offset centerLeft,
+    required Offset centerRight,
+  }) {
     // DRAW RECT BORDERS
     canvas.drawRRect(
         RRect.fromRectAndRadius(
           Rect.fromCenter(
             center: rect.center,
             width: rect.width + style.edgeWidth,
-            height: rect.height + style.edgeWidth,
+
+            ///Make Reactangle more visible
+            height: rect.height + style.edgeWidth - 5,
           ),
           Radius.circular(style.borderRadius),
         ),
@@ -187,7 +190,7 @@ class TrimSliderPainter extends CustomPainter {
           Offset(position - style.positionLineWidth / 2, -style.lineWidth * 4),
           Offset(
             position + style.positionLineWidth / 6,
-            size.height + style.lineWidth * 4,
+            size.height + style.lineWidth * 4 + 3,
           ),
         ),
         Radius.circular(style.positionLineWidth),
@@ -196,7 +199,8 @@ class TrimSliderPainter extends CustomPainter {
     );
   }
 
-  void paintIcons(Canvas canvas, {
+  void paintIcons(
+    Canvas canvas, {
     required Offset centerLeft,
     required Offset centerRight,
   }) {
@@ -236,10 +240,10 @@ class TrimSliderPainter extends CustomPainter {
   @override
   bool shouldRepaint(TrimSliderPainter oldDelegate) =>
       oldDelegate.rect != rect ||
-          oldDelegate.position != position ||
-          oldDelegate.style != style ||
-          oldDelegate.isTrimming != isTrimming ||
-          oldDelegate.isTrimmed != isTrimmed;
+      oldDelegate.position != position ||
+      oldDelegate.style != style ||
+      oldDelegate.isTrimming != isTrimming ||
+      oldDelegate.isTrimmed != isTrimmed;
 
   @override
   bool shouldRebuildSemantics(TrimSliderPainter oldDelegate) => false;

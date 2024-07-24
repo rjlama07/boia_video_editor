@@ -98,11 +98,11 @@ class _TrimSliderState extends State<TrimSlider>
 
   // Edges touch margin come from it size, but minimum is [margin]
   late final _edgesTouchMargin =
-  max(widget.controller.trimStyle.edgeWidth, _touchMargin);
+      max(widget.controller.trimStyle.edgeWidth, _touchMargin);
 
   // Position line touch margin come from it size, but minimum is [margin]
   late final _positionTouchMargin =
-  max(widget.controller.trimStyle.positionLineWidth, _touchMargin);
+      max(widget.controller.trimStyle.positionLineWidth, _touchMargin);
 
   // Scroll view
 
@@ -152,7 +152,7 @@ class _TrimSliderState extends State<TrimSlider>
   /// Returns the [Rect] side position (left or rect) in a range between 0 and 1
   double _getRectToTrim(double rectVal) =>
       (rectVal + _scrollController.offset - _horizontalMargin) /
-          _fullLayout.width;
+      _fullLayout.width;
 
   /// Convert the controller trim value into the trim slider view size
   double _geTrimToRect(double trimVal) =>
@@ -223,7 +223,7 @@ class _TrimSliderState extends State<TrimSlider>
           _scrollController.position.maxScrollExtent) {
         _changeTrimRect(
           left:
-          _rect.left + (_lastScrollPixels.abs() - _scrollController.offset),
+              _rect.left + (_lastScrollPixels.abs() - _scrollController.offset),
           updateTrim: false,
         );
       }
@@ -253,7 +253,7 @@ class _TrimSliderState extends State<TrimSlider>
       } else if (_scrollController.position.extentAfter == 0.0 &&
           _preSynchRight == null) {
         final scrollOffset = (_scrollController.position.maxScrollExtent -
-            (_lastScrollPixelsBeforeBounce ?? _scrollController.offset))
+                (_lastScrollPixelsBeforeBounce ?? _scrollController.offset))
             .abs();
         _preSynchRight = max(
           0,
@@ -303,7 +303,6 @@ class _TrimSliderState extends State<TrimSlider>
   //--------//
   void _onHorizontalDragStart(DragStartDetails details) {
     if (_scrollController.position.outOfRange) {
-
     } else {
       final pos = details.localPosition;
       final progressTrim = _getVideoPosition();
@@ -356,7 +355,6 @@ class _TrimSliderState extends State<TrimSlider>
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
     if (_scrollController.position.outOfRange) {
-
     } else {
       final Offset delta = details.delta;
       final posLeft = _rect.topLeft + delta;
@@ -370,10 +368,10 @@ class _TrimSliderState extends State<TrimSlider>
               width: _rect.width - (clampLeft - posLeft.dx).abs() - delta.dx);
           break;
         case _TrimBoundaries.right:
-        // avoid rect to be out of bounds & maxTrim to be smaller than minTrim
+          // avoid rect to be out of bounds & maxTrim to be smaller than minTrim
           _changeTrimRect(
             width: (_rect.left + _rect.width + delta.dx)
-                .clamp(_rect.left, _trimLayout.width + _horizontalMargin) -
+                    .clamp(_rect.left, _trimLayout.width + _horizontalMargin) -
                 _rect.left,
           );
           break;
@@ -457,8 +455,7 @@ class _TrimSliderState extends State<TrimSlider>
       _updateControllerTrim();
     } else {
       setState(
-              () =>
-          _rect = Rect.fromLTWH(left!, _rect.top, width!, _rect.height));
+          () => _rect = Rect.fromLTWH(left!, _rect.top, width!, _rect.height));
     }
     // if left edge or right edge is touched, vibrate
     if (shouldHaptic) HapticFeedback.lightImpact();
@@ -534,9 +531,9 @@ class _TrimSliderState extends State<TrimSlider>
   /// NOTE : Using function instead of getter seems faster when grabbing the cursor
   double _getVideoPosition() =>
       _preComputedVideoPosition ??
-          (_fullLayout.width * widget.controller.trimPosition -
-              _scrollController.offset +
-              _horizontalMargin);
+      (_fullLayout.width * widget.controller.trimPosition -
+          _scrollController.offset +
+          _horizontalMargin);
 
   Duration _getDurationDiff(double left, double width) {
     final double min = (left - _horizontalMargin) / _fullLayout.width;
@@ -552,8 +549,8 @@ class _TrimSliderState extends State<TrimSlider>
     final checkLastSize =
         _boundary != null && _boundary != _TrimBoundaries.inside;
     final isNotMin = _rect.left !=
-        (_horizontalMargin +
-            (checkLastSize ? 0 : _lastScrollPixels.abs())) &&
+            (_horizontalMargin +
+                (checkLastSize ? 0 : _lastScrollPixels.abs())) &&
         widget.controller.minTrim > 0.0 &&
         (checkLastSize ? left < _rect.left : true);
     final isNotMax = _rect.right != _trimLayout.width + _horizontalMargin &&
@@ -562,11 +559,11 @@ class _TrimSliderState extends State<TrimSlider>
     final isOnLeftEdge =
         (_scrollController.offset.abs() + _horizontalMargin - left).abs() < 1.0;
     final isOnRightEdge = (_bounceRightOffset +
-        left +
-        width -
-        _trimLayout.width -
-        _horizontalMargin)
-        .abs() <
+                left +
+                width -
+                _trimLayout.width -
+                _horizontalMargin)
+            .abs() <
         1.0;
 
     return (isNotMin && isOnLeftEdge) || (isNotMax && isOnRightEdge);
@@ -576,8 +573,8 @@ class _TrimSliderState extends State<TrimSlider>
   double _getRectWidthFromDuration(Duration duration) =>
       duration > Duration.zero
           ? _fullLayout.width /
-          (widget.controller.videoDuration.inMilliseconds /
-              duration.inMilliseconds)
+              (widget.controller.videoDuration.inMilliseconds /
+                  duration.inMilliseconds)
           : 0.0;
 
   @override
@@ -598,9 +595,11 @@ class _TrimSliderState extends State<TrimSlider>
         _createTrimRect();
       }
 
-      return SizedBox(
-          width: _fullLayout.width,
-          child: Stack(children: [
+      return Container(
+        color: Colors.transparent,
+        width: _fullLayout.width,
+        child: Stack(
+          children: [
             NotificationListener<ScrollNotification>(
               onNotification: (scrollNotification) {
                 if (_boundary == null) {
@@ -617,7 +616,10 @@ class _TrimSliderState extends State<TrimSlider>
                 physics: widget.scrollPhysics,
                 scrollDirection: Axis.horizontal,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: _horizontalMargin),
+                  padding: EdgeInsets.only(
+                    left: _horizontalMargin,
+                    right: _horizontalMargin,
+                  ),
                   child: Column(
                     children: [
                       ClipRRect(
@@ -641,42 +643,45 @@ class _TrimSliderState extends State<TrimSlider>
               ),
             ),
             FutureBuilder(
-                future: _loadImage(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    final image = snapshot.data as ui.Image;
-                    return GestureDetector(
-                      onHorizontalDragStart: _onHorizontalDragStart,
-                      onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                      onHorizontalDragEnd: _onHorizontalDragEnd,
-                      behavior: HitTestBehavior.opaque,
-                      child: AnimatedBuilder(
-                        animation: Listenable.merge([
-                          widget.controller,
-                          widget.controller.video,
-                        ]),
-                        builder: (_, __) {
-                          return RepaintBoundary(
-                            child: CustomPaint(
-                              size: Size.fromHeight(widget.height),
-                              painter: TrimSliderPainter(
-                                _rect,
-                                _getVideoPosition(),
-                                widget.controller.trimStyle,
-                                isTrimming: widget.controller.isTrimming,
-                                isTrimmed: widget.controller.isTrimmed,
-                                image: image,
-                              ),
+              future: _loadImage(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  final image = snapshot.data as ui.Image;
+                  return GestureDetector(
+                    onHorizontalDragStart: _onHorizontalDragStart,
+                    onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                    onHorizontalDragEnd: _onHorizontalDragEnd,
+                    behavior: HitTestBehavior.opaque,
+                    child: AnimatedBuilder(
+                      animation: Listenable.merge([
+                        widget.controller,
+                        widget.controller.video,
+                      ]),
+                      builder: (_, __) {
+                        return RepaintBoundary(
+                          child: CustomPaint(
+                            size: Size.fromHeight(widget.height),
+                            painter: TrimSliderPainter(
+                              _rect,
+                              _getVideoPosition(),
+                              widget.controller.trimStyle,
+                              isTrimming: widget.controller.isTrimming,
+                              isTrimmed: widget.controller.isTrimmed,
+                              image: image,
                             ),
-                          );
-                        },
-                      ),
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                })
-          ]));
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            )
+          ],
+        ),
+      );
     });
   }
 }

@@ -28,7 +28,7 @@ class ThumbnailSlider extends StatefulWidget {
 class _ThumbnailSliderState extends State<ThumbnailSlider> {
   final ValueNotifier<Rect> _rect = ValueNotifier<Rect>(Rect.zero);
   final ValueNotifier<TransformData> _transform =
-  ValueNotifier<TransformData>(const TransformData());
+      ValueNotifier<TransformData>(const TransformData());
 
   /// The max width of [ThumbnailSlider]
   double _sliderWidth = 1.0;
@@ -75,8 +75,7 @@ class _ThumbnailSliderState extends State<ThumbnailSlider> {
     }
   }
 
-  Stream<List<String>> _generateThumbnails() =>
-      generateTrimThumbnails(
+  Stream<List<String>> _generateThumbnails() => generateTrimThumbnails(
         widget.controller,
         quantity: _thumbnailsCount,
       );
@@ -109,45 +108,45 @@ class _ThumbnailSliderState extends State<ThumbnailSlider> {
           final data = snapshot.data;
           return snapshot.hasData
               ? ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _neededThumbnails,
-            itemBuilder: (_, i) =>
-                ValueListenableBuilder<TransformData>(
-                  valueListenable: _transform,
-                  builder: (_, transform, __) {
-                    final index =
-                    getBestIndex(_neededThumbnails, data!.length, i);
+                  scrollDirection: Axis.horizontal,
+                  padding: EdgeInsets.zero,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: _neededThumbnails,
+                  itemBuilder: (_, i) => ValueListenableBuilder<TransformData>(
+                    valueListenable: _transform,
+                    builder: (_, transform, __) {
+                      final index =
+                          getBestIndex(_neededThumbnails, data!.length, i);
 
-                    return Stack(
-                      children: [
-                        _buildSingleThumbnail(
-                          data[0],
-                          transform,
-                          isPlaceholder: true,
-                        ),
-                        if (index < data.length)
+                      return Stack(
+                        children: [
                           _buildSingleThumbnail(
-                            data[index],
+                            data[0],
                             transform,
-                            isPlaceholder: false,
+                            isPlaceholder: true,
                           ),
-                      ],
-                    );
-                  },
-                ),
-          )
+                          if (index < data.length)
+                            _buildSingleThumbnail(
+                              data[index],
+                              transform,
+                              isPlaceholder: false,
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                )
               : const SizedBox();
         },
       );
     });
   }
 
-  Widget _buildSingleThumbnail(String imagePath,
-      TransformData transform, {
-        required bool isPlaceholder,
-      }) {
+  Widget _buildSingleThumbnail(
+    String imagePath,
+    TransformData transform, {
+    required bool isPlaceholder,
+  }) {
     return ConstrainedBox(
       constraints: BoxConstraints.tight(_maxLayout),
       child: CropTransform(
