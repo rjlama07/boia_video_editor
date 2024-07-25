@@ -1,17 +1,19 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:video_editor/src/controller.dart';
 import 'package:video_editor/src/models/cover_data.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
-Stream<List<String>> generateTrimThumbnails(
+Stream<List<Uint8List>> generateTrimThumbnails(
   VideoEditorController controller, {
   required int quantity,
 }) async* {
   final String path = controller.file.path;
   final double eachPart = controller.videoDuration.inMilliseconds / quantity;
-  List<String> pathList = [];
+  List<Uint8List> pathList = [];
 
   for (int i = 1; i <= quantity; i++) {
     try {
@@ -22,7 +24,7 @@ Stream<List<String>> generateTrimThumbnails(
       int maxWidth = referenceWidth.toInt();
       int maxHeight = maxWidth ~/ aspectRatio;
 
-      final filePath = await VideoThumbnail.thumbnailFile(
+      final filePath = await VideoThumbnail.thumbnailData(
         imageFormat: ImageFormat.JPEG,
         video: path,
         timeMs: (eachPart * i).toInt(),
@@ -30,6 +32,7 @@ Stream<List<String>> generateTrimThumbnails(
         maxWidth: maxWidth,
         maxHeight: maxHeight,
       );
+      print(filePath);
       if (filePath != null) {
         pathList.add(filePath);
       }
@@ -81,7 +84,7 @@ Future<CoverData> generateSingleCoverThumbnail(
   int timeMs = 0,
   int quality = 10,
 }) async {
-  final String? imagePath = await VideoThumbnail.thumbnailFile(
+  final imagePath = await VideoThumbnail.thumbnailData(
     imageFormat: ImageFormat.JPEG,
     video: filePath,
     timeMs: timeMs,
