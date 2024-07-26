@@ -94,6 +94,7 @@ class _VideoEditorState extends State<VideoEditor> {
       iconSize: 0,
       borderRadius: 8,
       edgesSize: 0,
+      lineWidth: 1,
       lineColor: Colors.yellow,
       onTrimmingColor: Colors.white,
       onTrimmedColor: Colors.white,

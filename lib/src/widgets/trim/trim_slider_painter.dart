@@ -162,7 +162,7 @@ class TrimSliderPainter extends CustomPainter {
             width: rect.width + style.edgeWidth,
 
             ///Make Reactangle more visible
-            height: rect.height + style.edgeWidth - 5,
+            height: rect.height + style.edgeWidth - 4,
           ),
           Radius.circular(style.borderRadius),
         ),
