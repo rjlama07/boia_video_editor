@@ -648,12 +648,9 @@ class _TrimSliderState extends State<TrimSlider>
                 if (snapshot.hasData) {
                   final image = snapshot.data as ui.Image;
                   return GestureDetector(
-                    onHorizontalDragStart: _onHorizontalDragStart,
-                    onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                    onHorizontalDragEnd: (de) {
-                      print(de);
-                      _onHorizontalDragEnd(de);
-                    },
+                    // onHorizontalDragStart: _onHorizontalDragStart,
+                    // onHorizontalDragUpdate: _onHorizontalDragUpdate,
+                    // onHorizontalDragEnd: _onHorizontalDragEnd,
                     behavior: HitTestBehavior.opaque,
                     child: AnimatedBuilder(
                       animation: Listenable.merge([
