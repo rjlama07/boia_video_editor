@@ -650,7 +650,10 @@ class _TrimSliderState extends State<TrimSlider>
                   return GestureDetector(
                     onHorizontalDragStart: _onHorizontalDragStart,
                     onHorizontalDragUpdate: _onHorizontalDragUpdate,
-                    onHorizontalDragEnd: _onHorizontalDragEnd,
+                    onHorizontalDragEnd: (de) {
+                      print(de);
+                      _onHorizontalDragEnd(de);
+                    },
                     behavior: HitTestBehavior.opaque,
                     child: AnimatedBuilder(
                       animation: Listenable.merge([
